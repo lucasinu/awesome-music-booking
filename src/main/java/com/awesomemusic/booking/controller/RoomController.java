@@ -19,6 +19,10 @@ import com.awesomemusic.booking.dto.RoomDto;
 import com.awesomemusic.booking.exception.ErrorResponse;
 import com.awesomemusic.booking.service.RoomService;
 
+/**
+ * Controller for managing room-related operations.
+ * Provides endpoints for creating, retrieving, and check available rooms.
+ */
 @RestController
 @RequestMapping("/api/rooms")
 public class RoomController {
@@ -29,11 +33,23 @@ public class RoomController {
         this.roomService = roomService;
     }
 
+    /**
+     * Retrieves a list of all rooms.
+     *
+     * @return ResponseEntity containing a list of all rooms stored in the database.
+     */
     @GetMapping
     public ResponseEntity<List<RoomDto>> getAllRooms() {
         return ResponseEntity.ok(roomService.getAllRooms());
     }
     
+    /**
+     * Retrieves a list of available rooms for a given booking date and time slot.
+     *
+     * @param bookingDate The date for which availability is requested, formatted as ISO DATE_TIME.
+     * @param slotName The name of the slot (e.g., morning, afternoon, evening).
+     * @return ResponseEntity containing the list of available rooms or an error message if the slot is not found.
+     */
     @GetMapping("/available")
     public ResponseEntity<?> getAvailableRooms(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate bookingDate,
@@ -49,6 +65,13 @@ public class RoomController {
 
     }
 
+    /**
+     * Creates a new room.
+     * 
+     * @param RoomDto containing necessary details.
+     * @return ResponseEntity with the RoomDto if successful,
+     *         or an error message if not.
+     */
     @PostMapping
     public ResponseEntity<Optional<RoomDto>> createRoom(@RequestBody RoomDto roomDto) {
     	

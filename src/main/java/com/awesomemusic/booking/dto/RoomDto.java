@@ -1,5 +1,8 @@
 package com.awesomemusic.booking.dto;
 
+/**
+ * Data Transfer Object for Room entity.
+ */
 public class RoomDto {
 	private Long idRoom;
 	private String name;

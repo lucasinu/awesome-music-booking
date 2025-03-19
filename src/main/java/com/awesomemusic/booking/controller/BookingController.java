@@ -18,6 +18,10 @@ import com.awesomemusic.booking.entity.Booking;
 import com.awesomemusic.booking.exception.ErrorResponse;
 import com.awesomemusic.booking.service.BookingService;
 
+/**
+ * Controller for managing booking-related operations.
+ * Provides endpoints for creating, retrieving, and updating bookings.
+ */
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
@@ -28,10 +32,18 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
+    /**
+     * Creates a new booking.
+     * 
+     * @param request Booking request containing necessary details.
+     * @return ResponseEntity with the booking code if successful,
+     *         or an error message if the room is already booked.
+     */
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody BookingRequest request) {        
         Optional<Booking> booking = bookingService.createBooking(request);
         
+        //If the createBooking() method returns a Booking, it means the Booking is correctly saved and we have to return the bookingCode 
         if (booking.isPresent()) {
             return ResponseEntity.ok(booking.get().getBookingCode());
         } else {
@@ -39,11 +51,23 @@ public class BookingController {
         }
     }
 
+    /**
+     * Retrieves a list of all bookings.
+     *
+     * @return ResponseEntity containing a list of all bookings stored in the database.
+     */
     @GetMapping
     public ResponseEntity<List<Booking>> getAllBookings() {
         return ResponseEntity.ok(bookingService.getAllBookings());
     }
     
+    /**
+     * Retrieves a booking by its bookingCode.
+     *
+     * @param bookingCode The bookingCode of the booking to search for.
+     * @return ResponseEntity containing an Optional of the found Booking, 
+     *         or an error message if no booking is found.
+     */
     @GetMapping("/{bookingCode}")
     public ResponseEntity<?> getBookingByBookingCode(@PathVariable String bookingCode) {
         Optional<Booking> booking = bookingService.getBookingByBookingCode(bookingCode);
@@ -55,11 +79,24 @@ public class BookingController {
         }    	
     }
 
+    /**
+     * Updates the status of a booking based on the given ID and status.
+     *
+     * @param id The unique identifier of the booking to be updated.
+     * @param status The new status to be set (e.g., ACCEPTED, REFUSED, CANCELED).
+     * @return ResponseEntity containing the updated booking.
+     */
     @PatchMapping("/{id}/status")
     public ResponseEntity<Booking> updateBookingStatus(@PathVariable Long id, @RequestParam String status) {
         return ResponseEntity.ok(bookingService.updateBookingStatus(id, status));
     }
-    
+
+    /**
+     * Accepts a booking by updating its status to ACCEPTED.
+     *
+     * @param id The unique identifier of the booking to be accepted.
+     * @return ResponseEntity containing the updated booking with status set to ACCEPTED.
+     */
     @PatchMapping("/{id}/accept")
     public ResponseEntity<Booking> acceptBooking(@PathVariable Long id) {
     	return ResponseEntity.ok(bookingService.acceptBooking(id));

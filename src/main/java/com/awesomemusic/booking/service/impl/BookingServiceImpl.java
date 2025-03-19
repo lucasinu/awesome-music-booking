@@ -31,6 +31,12 @@ public class BookingServiceImpl implements BookingService {
         this.roomRepository = roomRepository;
     }
 
+    /**
+     * Creates a booking if the selected room is available for the given date and slot.
+     *
+     * @param request The booking request details.
+     * @return Optional containing the booking if successful, empty if the room is unavailable.
+     */
 	@Override
 	public Optional<Booking> createBooking(BookingRequest request) {
 		
@@ -55,8 +61,25 @@ public class BookingServiceImpl implements BookingService {
         return Optional.of(bookingRepository.save(booking));
 	}
 
+	/**
+	 * Generates a unique booking code based on customer name, room ID, slot name, and booking date.
+	 * 
+	 * The generated code follows this format:  
+	 * [First two letters of customer name][Room ID (4 digits)][First two letters of slot name][Booking date (ddMMYY)]  
+	 * 
+	 * Example:  
+	 * - Customer: "Alice"  
+	 * - Room ID: 12  
+	 * - Slot Name: "Morning"  
+	 * - Booking Date: 19th March 2025  
+	 * - Generated Code: **AL0012MO190325**
+	 * 
+	 * @param booking The booking entity containing the details used to generate the code.
+	 * @return A unique booking code as a string.
+	 */
     private String generateBookingCode(Booking booking) {
-
+        
+    	// Using StringBuilder for better performance and memory efficiency compared to String concatenation
     	StringBuilder code = new StringBuilder();
     	
     	code.append( (booking.getCustomerName().length() >= 2) 
@@ -71,7 +94,7 @@ public class BookingServiceImpl implements BookingService {
     	 
     	code.append(booking.getBookingDate().format(DateTimeFormatter.ofPattern("ddMMYY")));
     	
-    	//Should be unique for valid booking  	
+        // Ensuring uniqueness within the system context
     	return code.toString();
     
     }
