@@ -21,17 +21,17 @@ public class Slot {
     private String name;
 
     @Column(name = "start_hour")
-    private Float startHour;
+    private String startHour;
 
     @Column(name = "end_hour")
-    private Float endHour;
+    private String endHour;
     
     public Slot() {
     	super();
     }
 
 	public Slot(Long idSlot, @Size(max = 45, message = "Name must not exceed 45 characters") String name,
-			Float startHour, Float endHour) {
+			String startHour, String endHour) {
 		this.idSlot = idSlot;
 		this.name = name;
 		this.startHour = startHour;
@@ -54,19 +54,19 @@ public class Slot {
 		this.name = name;
 	}
 
-	public Float getStartHour() {
+	public String getStartHour() {
 		return startHour;
 	}
 
-	public void setStartHour(Float startHour) {
+	public void setStartHour(String startHour) {
 		this.startHour = startHour;
 	}
 
-	public Float getEndHour() {
+	public String getEndHour() {
 		return endHour;
 	}
 
-	public void setEndHour(Float endHour) {
+	public void setEndHour(String endHour) {
 		this.endHour = endHour;
 	}    
     

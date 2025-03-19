@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.awesomemusic.booking.entity.Slot;
-import com.awesomemusic.booking.repository.SlotRepository;
+import com.awesomemusic.booking.dto.SlotDto;
+import com.awesomemusic.booking.exception.ErrorResponse;
+import com.awesomemusic.booking.service.SlotService;
 
 
 /**
@@ -24,10 +25,10 @@ import com.awesomemusic.booking.repository.SlotRepository;
 @RestController
 @RequestMapping("/api/slots")
 public class SlotController {
-    private final SlotRepository slotRepository;
+    private final SlotService slotService;
 
-    public SlotController(SlotRepository slotRepository) {
-        this.slotRepository = slotRepository;
+    public SlotController(SlotService slotService) {
+        this.slotService = slotService;
     }
 
     /**
@@ -36,8 +37,8 @@ public class SlotController {
      * @return ResponseEntity containing a list of all slots stored in the database.
      */
     @GetMapping
-    public ResponseEntity<List<Slot>> getAllSlots() {
-        return ResponseEntity.ok(slotRepository.findAll());
+    public ResponseEntity<List<SlotDto>> getAllSlots() {
+        return ResponseEntity.ok(slotService.getAllSlots());
     }
 
     /**
@@ -48,9 +49,9 @@ public class SlotController {
      *         or an error message if not.
      */
     @PostMapping
-    public ResponseEntity<Slot> createSlot(@RequestBody Slot slot) {
+    public ResponseEntity<Optional<SlotDto>> createSlot(@RequestBody SlotDto slotDto) {
     	try {
-    		return ResponseEntity.ok(slotRepository.save(slot));
+    		return ResponseEntity.ok(slotService.createSlot(slotDto));
     	} catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in saving: " + e.getMessage());
 		}
@@ -64,7 +65,14 @@ public class SlotController {
      *         or an empty Optional if no slot is found.
      */
     @GetMapping("/{name}")
-    public ResponseEntity<Optional<Slot>> getSlotByName(@PathVariable String name) {
-        return ResponseEntity.ok(slotRepository.findByName(name));
+    public ResponseEntity<?> getSlotByName(@PathVariable String name) {
+    	
+    	Optional<SlotDto> response = slotService.getByName(name);
+    	
+    	if(response.isEmpty()) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("Slot "+name+" not found!"));
+    	} else {
+    		return ResponseEntity.ok(response.get());
+    	}    	
     }
 }
