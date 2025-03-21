@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.awesomemusic.booking.dto.BookingRequest;
 import com.awesomemusic.booking.entity.Booking;
+import com.awesomemusic.booking.entity.BookingStatus;
 import com.awesomemusic.booking.exception.ErrorResponse;
 import com.awesomemusic.booking.service.BookingService;
 
@@ -100,5 +101,16 @@ public class BookingController {
     @PatchMapping("/{id}/accept")
     public ResponseEntity<Booking> acceptBooking(@PathVariable Long id) {
     	return ResponseEntity.ok(bookingService.acceptBooking(id));
+    }
+    
+    /**
+     * Refuses a booking by updating its status to REFUSED.
+     *
+     * @param id The unique identifier of the booking to be accepted.
+     * @return ResponseEntity containing the updated booking with status set to REFUSED.
+     */
+    @PatchMapping("/{id}/refuse")
+    public ResponseEntity<Booking> refuseBooking(@PathVariable Long id) {
+    	return ResponseEntity.ok(bookingService.updateBookingStatus(id, BookingStatus.REFUSED.toString()));
     }
 }

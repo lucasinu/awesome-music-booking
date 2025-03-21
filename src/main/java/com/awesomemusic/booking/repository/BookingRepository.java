@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.awesomemusic.booking.entity.Booking;
+import com.awesomemusic.booking.entity.BookingStatus;
 import com.awesomemusic.booking.entity.Room;
 import com.awesomemusic.booking.entity.Slot;
 
@@ -17,5 +18,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByBookingDateAndSlot(LocalDate date, Slot slot);
 
 	Optional<Booking> findByBookingCode(String bookingCode);
+
+	boolean existsByRoomAndBookingDateAndSlotAndStatusNot(Room room, LocalDate bookingDate, Slot slot,
+			BookingStatus refused);
 	
 }

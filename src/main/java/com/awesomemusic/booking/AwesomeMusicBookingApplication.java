@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AwesomeMusicBookingApplication {
 
 	public static void main(String[] args) {
+			
 		SpringApplication.run(AwesomeMusicBookingApplication.class, args);
+		
 	}
 
 }

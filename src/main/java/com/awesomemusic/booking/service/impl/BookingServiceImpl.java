@@ -120,7 +120,7 @@ public class BookingServiceImpl implements BookingService {
     }
 	
     public boolean isRoomAvailable(Room room, LocalDate bookingDate, Slot slot) {
-    	return !bookingRepository.existsByRoomAndBookingDateAndSlot(room, bookingDate, slot);
+    	return !bookingRepository.existsByRoomAndBookingDateAndSlotAndStatusNot(room, bookingDate, slot, BookingStatus.REFUSED);
     }
 
 	@Override
