@@ -21,5 +21,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
 	boolean existsByRoomAndBookingDateAndSlotAndStatusNot(Room room, LocalDate bookingDate, Slot slot,
 			BookingStatus refused);
+
+	List<Booking> findByBookingDateAndSlotAndStatusNot(LocalDate date, Slot slot, BookingStatus refused);
 	
 }

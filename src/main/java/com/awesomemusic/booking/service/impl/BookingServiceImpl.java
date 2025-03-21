@@ -40,9 +40,14 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public Optional<Booking> createBooking(BookingRequest request) {
 		
+		//First check the date
+	    if (request.getBookingDate().isBefore(LocalDate.now())) {
+	        throw new IllegalArgumentException("The booking date must be today or a future date.");
+	    }
+		
         Room room = roomRepository.findById(request.getRoomId()).orElseThrow(() -> new RuntimeException("Room not found"));
 		Slot slot = slotRepository.findById(request.getSlotId()).orElseThrow(() -> new RuntimeException("Slot not found"));
-		
+				
         // Check if the room is available for the selected Slot in the selected date
         boolean isAvailable = isRoomAvailable(room, request.getBookingDate(), slot);
         if (!isAvailable) {

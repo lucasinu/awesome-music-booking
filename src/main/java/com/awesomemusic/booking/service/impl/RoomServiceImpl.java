@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.awesomemusic.booking.dto.RoomDto;
 import com.awesomemusic.booking.entity.Booking;
+import com.awesomemusic.booking.entity.BookingStatus;
 import com.awesomemusic.booking.entity.Room;
 import com.awesomemusic.booking.entity.Slot;
 import com.awesomemusic.booking.mapper.RoomMapper;
@@ -47,7 +48,7 @@ public class RoomServiceImpl implements RoomService {
         Slot slot = optionalSlot.get();
     	
         // Finds all booked room by date and slot
-        List<Booking> bookings = bookingRepository.findByBookingDateAndSlot(date, slot);
+        List<Booking> bookings = bookingRepository.findByBookingDateAndSlotAndStatusNot(date, slot, BookingStatus.REFUSED);
         List<Room> bookedRooms = bookings.stream().map(Booking::getRoom).toList();
         
         // Returns available rooms
