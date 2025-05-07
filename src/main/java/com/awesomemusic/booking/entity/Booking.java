@@ -57,7 +57,7 @@ public class Booking {
     @Column(name = "status", length = 45, nullable = false)
     private BookingStatus status;
     
-    @Column(name = "booking_code", length = 14, nullable = false, unique = true)
+    @Column(name = "booking_code", length = 22, nullable = false, unique = true)
     private String bookingCode;
     
     public Booking() {

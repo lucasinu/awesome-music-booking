@@ -3,7 +3,6 @@ package com.awesomemusic.booking.service.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -17,6 +16,9 @@ import com.awesomemusic.booking.repository.BookingRepository;
 import com.awesomemusic.booking.repository.RoomRepository;
 import com.awesomemusic.booking.repository.SlotRepository;
 import com.awesomemusic.booking.service.BookingService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -70,14 +72,14 @@ public class BookingServiceImpl implements BookingService {
 	 * Generates a unique booking code based on customer name, room ID, slot name, and booking date.
 	 * 
 	 * The generated code follows this format:  
-	 * [First two letters of customer name][Room ID (4 digits)][First two letters of slot name][Booking date (ddMMYY)]  
+	 * [First two letters of customer name][Room ID (4 digits)][First two letters of slot name][Booking date (ddMMYY)] [UUID (8 characters)]
 	 * 
 	 * Example:  
 	 * - Customer: "Alice"  
 	 * - Room ID: 12  
 	 * - Slot Name: "Morning"  
 	 * - Booking Date: 19th March 2025  
-	 * - Generated Code: **AL0012MO190325**
+	 * - Generated Code: **AL0012MO190325A1B2C3D4**
 	 * 
 	 * @param booking The booking entity containing the details used to generate the code.
 	 * @return A unique booking code as a string.
@@ -99,14 +101,17 @@ public class BookingServiceImpl implements BookingService {
     	 
     	code.append(booking.getBookingDate().format(DateTimeFormatter.ofPattern("ddMMYY")));
     	
-        // Ensuring uniqueness within the system context
+        // Append a unique identifier (shortened UUID) to ensure uniqueness
+        String uid = java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        code.append(uid);
+
     	return code.toString();
     
     }
     
     @Override
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
+    public Page<Booking> getAllBookings(PageRequest pageRequest) {
+        return bookingRepository.findAll(pageRequest);
     }
     
     @Override

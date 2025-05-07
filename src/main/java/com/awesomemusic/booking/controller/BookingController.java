@@ -1,8 +1,11 @@
 package com.awesomemusic.booking.controller;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -58,8 +61,13 @@ public class BookingController {
      * @return ResponseEntity containing a list of all bookings stored in the database.
      */
     @GetMapping
-    public ResponseEntity<List<Booking>> getAllBookings() {
-        return ResponseEntity.ok(bookingService.getAllBookings());
+    public Page<Booking> getAllBookings(@RequestParam(value="offset", required = false) Integer offset, 
+                                            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                            @RequestParam(value = "sortBy", required = false) String sortBy) {
+        offset = (offset == null) ? 0 : offset;
+        pageSize = (pageSize == null) ? 10 : pageSize;
+        sortBy = (StringUtils.isEmpty(sortBy)) ? "bookingDate" : sortBy;
+        return bookingService.getAllBookings(PageRequest.of(offset, pageSize, Sort.by(sortBy)));
     }
     
     /**
